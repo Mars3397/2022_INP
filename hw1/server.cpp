@@ -75,7 +75,7 @@ string get_hint(char buff[], char ans[]) {
 }
 
 int main(int argc, char *argv[]) {
-	int listenfd, connfd, udpfd, nready, maxfdp1;
+	int listenfd, connfd, udpfd, nready, maxfdp;
 	char buffer[MAXLINE];
 	fd_set rset;
 	ssize_t n;
@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
 
 	// create listening TCP socket
 	listenfd = socket(AF_INET, SOCK_STREAM, 0);
-	// set server to SO_REUSEADDR
+    // set server to SO_REUSEADDR
 	const int enable = 1;
 	if (setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0) {
 		printf("setsockopt(SO_REUSEADDR) failed");
@@ -120,14 +120,14 @@ int main(int argc, char *argv[]) {
 	FD_ZERO(&rset);
 
 	// get maxfd
-	maxfdp1 = max(listenfd, udpfd) + 1;
+	maxfdp = max(listenfd, udpfd) + 1;
 	while (1) {
         // set listenfd and udpfd in readset
         FD_SET(listenfd, &rset);
         FD_SET(udpfd, &rset);
 
         // wait until a fd is ready
-        nready = select(maxfdp1, &rset, NULL, NULL, NULL);
+        nready = select(maxfdp, &rset, NULL, NULL, NULL);
         len = sizeof(cliaddr);
         connfd = accept(listenfd, (struct sockaddr*)&cliaddr, &len);
 
@@ -143,8 +143,8 @@ int main(int argc, char *argv[]) {
                 // push connfd and udpfd to ready set and select among them
                 FD_SET(connfd, &rset);
                 FD_SET(udpfd, &rset);
-                maxfdp1 = max(connfd, maxfdp1) + 1;
-                nready = select(maxfdp1, &rset, NULL, NULL, NULL);
+                maxfdp = max(connfd, maxfdp) + 1;
+                nready = select(maxfdp, &rset, NULL, NULL, NULL);
                 // message sent by TCP 
                 if (FD_ISSET(connfd, &rset)) {
                     bzero(buffer, MAXLINE);
@@ -160,8 +160,13 @@ int main(int argc, char *argv[]) {
                     // actions associated with each command
                     // exit
                     if (args[0] == "exit\n" || args[0] == "exit" || buffer[0] == '\0') {
-                        printf("tcp get msg: exit\n");
-                        break;
+                        if (l == 1 || l == 0) {
+                            printf("tcp get msg: exit\n"); 
+                            break;
+                        } else {
+                            char mr[MAXLINE] = "Usage: exit\n";
+                            write(connfd, mr, sizeof(buffer));
+                        }
                     } 
                     // login
                     else if (args[0] == "login\n" || args[0] == "login") {
