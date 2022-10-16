@@ -31,12 +31,6 @@ int main(int argc, char *argv[]) {
 		printf("TCP socket creation failed");
 		exit(0);
 	}
-	// set server to SO_REUSEADDR
-	const int enable = 1;
-	if (setsockopt(tcpsockfd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0) {
-		printf("setsockopt(SO_REUSEADDR) failed");
-		exit(0);
-	}
 	// create UDP socket file descriptor
 	if ((udpsockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
 		printf("UDP socket creation failed");
