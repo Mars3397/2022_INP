@@ -134,9 +134,14 @@ int main(int argc, char *argv[]) {
 			}
         } 
 		// exit (TCP)
-		else if ((args[0] == "exit\n" || args[0] == "exit") && l == 1) {
+		else if ((args[0] == "exit\n" || args[0] == "exit")) {
 			write(tcpsockfd, buffer, sizeof(buffer));
-            break; 
+			if (l == 1) {
+				break; 
+			} else {
+				read(tcpsockfd, buffer, sizeof(buffer));
+				printf("%s", buffer);
+			}
         } 
 		// command not in command list
 		else {
