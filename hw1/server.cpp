@@ -26,7 +26,7 @@ struct data {
     char username[100][100];
     char email[100][100];
     char password[100][100];
-    int login_process[100];
+    pid_t login_process[100];
 };
 
 int max(int x, int y) {
@@ -134,7 +134,7 @@ int main(int argc, char *argv[]) {
         // fork a process to deal with a client
         if (!fork()) {
             // New connection and welcoming message
-            cout << "New connection\n";
+            cout << "New connection.\n";
             write(connfd, message, sizeof(buffer));
             string arg;
 	        vector<string> args;
@@ -161,6 +161,12 @@ int main(int argc, char *argv[]) {
                     // exit
                     if (args[0] == "exit\n" || args[0] == "exit" || buffer[0] == '\0') {
                         if (l == 1 || l == 0) {
+                            for (int i = 0; i < *count_u; i++) {
+                                if (database->login_process[i] == getpid()) {
+                                    database->login_process[i] = 0;
+                                    break;
+                                }
+                            }
                             printf("tcp get msg: exit\n"); 
                             break;
                         } else {
@@ -205,12 +211,12 @@ int main(int argc, char *argv[]) {
                                     write(connfd, mr, sizeof(buffer));
                                 } else {
                                     database->login_process[index] = getpid();
-                                    string temp = "Welcome " + string(database->username[index]) + "\n";
+                                    string temp = "Welcome, " + string(database->username[index]) + ".\n";
                                     char mr[MAXLINE]; strcpy(mr, temp.c_str());
                                     write(connfd, mr, sizeof(buffer));
                                 }
                             } else if (user_flag) {
-                                char mr[MAXLINE] = "Password not correct\n";
+                                char mr[MAXLINE] = "Password not correct.\n";
                                 write(connfd, mr, sizeof(buffer));
                             } else {
                                 char mr[MAXLINE] = "Username not found.\n";
@@ -238,7 +244,7 @@ int main(int argc, char *argv[]) {
                             }
                             if (can_logout) {
                                 database->login_process[index] = 0;
-                                string temp = "Bye, " + string(database->username[index]) + "\n";
+                                string temp = "Bye, " + string(database->username[index]) + ".\n";
                                 char mr[MAXLINE]; strcpy(mr, temp.c_str());
                                 write(connfd, mr, sizeof(buffer));
                             } else {
