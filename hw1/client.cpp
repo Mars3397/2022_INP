@@ -61,7 +61,6 @@ int main(int argc, char *argv[]) {
 	// loop for input
     while (1) {
         bzero(buffer, sizeof(buffer));
-        // printf("%% ");
 		// read and split the command
         fgets(buffer, MAXLINE, stdin);
 		args.clear();
@@ -105,7 +104,8 @@ int main(int argc, char *argv[]) {
 			read(tcpsockfd, buffer, sizeof(buffer));
 			printf("%s", buffer);
 			bool f = true;
-			if (strncmp(buffer, "Usage: start-game <4-digit number>\n", 35) == 0) {
+			if (strncmp(buffer, "Usage: start-game <4-digit number>\n", 35) == 0 || 
+				strncmp(buffer, "Please login first.\n", 20) == 0) {
 				f = false;
 			}
 			// loop for guess
