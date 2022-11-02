@@ -11,7 +11,7 @@ $ docker -v
 Create docker container:
 ```
 $ docker pull jyunkai/nplinux_x86:v1
-$ docker run -it -v "your host file path":”container file path” imagename bin/bash
+$ docker run -it -v `pwd`:/home/hw1 jyunkai/nplinux_x86:v1  bin/bash
 ```
 
 Connect termianl to docker containter:
