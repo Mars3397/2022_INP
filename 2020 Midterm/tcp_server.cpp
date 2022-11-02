@@ -93,7 +93,7 @@ int main(int argc, char *argv[]) {
 					write(connfd, s.c_str(), sizeof(s));
 				}
 			}
-		}
+		} 
 	}
 	close(listenfd);
 	close(connfd);
