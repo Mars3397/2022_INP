@@ -1,6 +1,6 @@
 # 2022_INP
 
-## Dock
+## Docker
 
 
 Check docker version: 
