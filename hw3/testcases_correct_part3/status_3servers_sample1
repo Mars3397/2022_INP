@@ -1,0 +1,55 @@
+(0) (0) Server1: 0
+Server2: 0
+Server3: 0
+(0) (0) Register Successfully
+(0) (0) Welcome, Alice
+(0) (0) Server1: 1
+Server2: 0
+Server3: 0
+(1) (0) Register Successfully
+(1) (0) Server1: 1
+Server2: 0
+Server3: 0
+(1) (1) Welcome, Bob
+(1) (1) Server1: 1
+Server2: 1
+Server3: 0
+(2) (0) Register Successfully
+(2) (1) Register Successfully
+(2) (0) Server1: 1
+Server2: 1
+Server3: 0
+(2) (0) Welcome, Cindy
+(2) (0) You already logged in as Cindy
+(2) (1) Server1: 1
+Server2: 1
+Server3: 1
+(2) (2) Server1: 1
+Server2: 1
+Server3: 1
+(2) (2) Welcome, David
+(2) (1) Server1: 1
+Server2: 1
+Server3: 2
+(1) (0) Server1: 1
+Server2: 1
+Server3: 2
+(1) (1) Goodbye, Bob
+(1) (1) Server1: 1
+Server2: 0
+Server3: 2
+(0) (0) Server1: 1
+Server2: 0
+Server3: 2
+(0) (0) Goodbye, Alice
+(0) (0) Server1: 0
+Server2: 0
+Server3: 2
+(2) (0) Goodbye, Cindy
+(2) (2) Server1: 0
+Server2: 0
+Server3: 1
+(2) (2) Goodbye, David
+(2) (1) Server1: 0
+Server2: 0
+Server3: 0

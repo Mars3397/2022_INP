@@ -1,0 +1,54 @@
+3
+2
+4
+0 0 tcp status
+0 0 udp register Alice alice@gmail.com 1
+0 0 udp register Bob bob@gmail.com 2
+0 0 udp register Cindy cindy@gmail.com 3
+0 0 udp register David david@gmail.com 4
+0 0 tcp login Alice 1
+0 0 tcp status
+0 0 tcp login Bob 2
+0 0 tcp login Cindy 3
+0 0 tcp status
+0 1 tcp login Bob 2
+0 2 tcp login Cindy 3
+0 2 tcp status
+1 0 udp register Eva eva@gmail.com 5
+1 0 udp register Fisher fisher@gmail.com 6
+1 0 tcp status
+1 1 tcp login Bob 2
+1 1 tcp status
+1 1 tcp login Eva 5
+2 3 tcp status
+1 0 tcp login Fisher 6
+0 1 tcp logout
+1 0 tcp status
+2 0 udp register Gary gary@gmail.com 7
+2 1 udp register Henry henry@gmail.com 8
+2 2 udp register Ivy ivy@gmail.com 9
+2 3 udp register David david@gmail.com 4
+2 0 tcp status
+2 0 tcp login Cindy 3
+0 1 tcp login Cindy 3
+2 0 tcp login Gary 7
+2 1 tcp status
+2 1 tcp login Henry 8
+2 2 tcp login David 4
+2 3 tcp status
+2 3 tcp login Ivy 9
+0 0 tcp logout
+0 1 tcp logout
+2 2 tcp status
+1 1 tcp logout
+2 1 tcp logout
+2 2 tcp logout
+2 3 tcp logout
+1 1 tcp status
+0 0 tcp status
+0 0 tcp logout
+0 0 tcp status
+2 0 tcp logout
+2 2 tcp status
+2 2 tcp logout
+2 1 tcp status
