@@ -123,6 +123,7 @@ int main(int argc, char *argv[]) {
                     cout << inet_ntoa(cliaddr.sin_addr) << ":" << ntohs(cliaddr.sin_port) << " disconnected\n";
                     close(client_fds[f]);
                     client_fds[f] = 0;
+                    client_number[f] = -1;
                 } else {
                     // split the input
                     args.clear();

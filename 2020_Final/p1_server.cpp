@@ -126,6 +126,7 @@ int main(int argc, char *argv[]) {
                     users_info->login_fd[client_index[f]] = 0;
                     close(client_fds[f]);
                     client_fds[f] = 0;
+                    client_index[f] = -1;
                 } else {
                     // split the input
                     args.clear();
