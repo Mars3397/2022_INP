@@ -121,8 +121,8 @@ int main(int argc, char *argv[]) {
                 if ((test = read(client_fds[f], buffer, sizeof(buffer))) == 0) {
                     cout << "(user" << (char)(client_number[f] + 'A') << ") ";
                     cout << inet_ntoa(cliaddr.sin_addr) << ":" << ntohs(cliaddr.sin_port) << " disconnected\n";
-                    client_fds[f] = 0;
                     close(client_fds[f]);
+                    client_fds[f] = 0;
                 } else {
                     // split the input
                     args.clear();

@@ -124,8 +124,8 @@ int main(int argc, char *argv[]) {
                 // if a sd is set but send nothing -> client disconnect
                 if ((test = read(client_fds[f], buffer, sizeof(buffer))) == 0) {
                     users_info->login_fd[client_index[f]] = 0;
-                    client_fds[f] = 0;
                     close(client_fds[f]);
+                    client_fds[f] = 0;
                 } else {
                     // split the input
                     args.clear();
