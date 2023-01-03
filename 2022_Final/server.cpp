@@ -24,11 +24,12 @@ using namespace std;
 
 #define MAXLINE 1024
 #define PORT 8888
+#define max_clients 50
  
 struct users {
-    char username[20][100];
-    int login_fd[20];
-    bool mute[20];
+    char username[max_clients][100];
+    int login_fd[max_clients];
+    bool mute[max_clients];
     int count_u;
 };
 
@@ -41,7 +42,7 @@ int main(int argc, char *argv[]) {
 	struct sockaddr_in cliaddr, servaddr;
 	void sig_chld(int);
 
-    int max_clients = 20, client_fds[max_clients], client_index[max_clients];
+    int client_fds[max_clients], client_index[max_clients];
     for (int i = 0; i < max_clients; i++) {
         client_fds[i] = 0;
         client_index[i] = -1;
@@ -68,7 +69,7 @@ int main(int argc, char *argv[]) {
 
 	// binding server addr structure to listenfd
 	bind(listenfd, (struct sockaddr*)&servaddr, sizeof(servaddr));
-	listen(listenfd, 20);
+	listen(listenfd, max_clients);
 
     cout << "Server is running" << endl;
 
@@ -109,7 +110,7 @@ int main(int argc, char *argv[]) {
                     client_index[i] = index;
                     users_info->login_fd[index] = connfd;
                     users_info->mute[index] = false;
-                    string temp = "**************************\n* Welcome to the BBS server. *\n**************************\n";
+                    string temp = "************************** \n*Welcome to the BBS server.* \n**************************\n";
                     temp += "Welcome, user" + to_string(index) + ".\n";
                     char msg[MAXLINE]; strcpy(msg, temp.c_str());
                     write(client_fds[i], msg, strlen(msg));
@@ -140,7 +141,6 @@ int main(int argc, char *argv[]) {
                     }
                     int l = args.size();
                     // actions associated with each command
-                    cout << "From client " << f << ": " << buffer;
                     // mute
                     if (args[0] == "mute") {
                         if (users_info->mute[f]) {
@@ -151,7 +151,9 @@ int main(int argc, char *argv[]) {
                             char msg[MAXLINE] = "Mute mode.\n";
                             write(client_fds[f], msg, strlen(msg));
                         }
-                    } else if (args[0] == "unmute") {
+                    } 
+                    // unmute
+                    else if (args[0] == "unmute") {
                         if (!users_info->mute[f]) {
                             char msg[MAXLINE] = "Yor are already in unmute mode.\n";
                             write(client_fds[f], msg, strlen(msg));
@@ -160,7 +162,9 @@ int main(int argc, char *argv[]) {
                             char msg[MAXLINE] = "Unmute mode.\n";
                             write(client_fds[f], msg, strlen(msg));
                         }
-                    } else if (args[0] == "yell") {
+                    } 
+                    // yell
+                    else if (args[0] == "yell") {
                         string temp = "user" + to_string(client_index[f]) + ": ";
                         for (int i = 1; i < l; i++) {
                             temp += args[i] + " ";
@@ -172,25 +176,34 @@ int main(int argc, char *argv[]) {
                                 write(client_fds[i], msg, strlen(msg));
                             }
                         }
-                    } else if (args[0] == "tell") {
+                    } 
+                    // tell 
+                    else if (args[0] == "tell") {
                         int receiver_index = stoi(args[1].substr(4));
                         if (users_info->login_fd[receiver_index] == 0) {
                             string temp = "user" + to_string(receiver_index) + " does not exist.\n";
                             char msg[MAXLINE]; strcpy(msg, temp.c_str());
                             write(client_fds[f], msg, strlen(msg));
                         } else {
-                            if (f != receiver_index && users_info->mute[receiver_index] == false) {
-                                string temp = "user" + to_string(client_index[f]) + " told you: ";
-                                for (int i = 2; i < l; i++) {
-                                    temp += args[i] + " ";
-                                }
-                                temp.pop_back(); temp += "\n";
-                                char msg[MAXLINE]; strcpy(msg, temp.c_str());
-                                write(users_info->login_fd[receiver_index], msg, strlen(msg));
+                            if (f != receiver_index) {
+                                if (users_info->mute[receiver_index] == false) {
+                                    string temp = "user" + to_string(client_index[f]) + " told you: ";
+                                    for (int i = 2; i < l; i++) {
+                                        temp += args[i] + " ";
+                                    }
+                                    temp.pop_back(); temp += "\n";
+                                    char msg[MAXLINE]; strcpy(msg, temp.c_str());
+                                    write(users_info->login_fd[receiver_index], msg, strlen(msg));
+                                } 
+                            } else {
+                                char msg[MAXLINE] = "You cannot send message to yourself.\n";
+                                write(client_fds[f], msg, strlen(msg));
                             }
                         }
                         
-                    } else if (args[0] == "exit") {
+                    } 
+                    // exit
+                    else if (args[0] == "exit") {
                         users_info->login_fd[client_index[f]] = 0;
                         close(client_fds[f]);
                         client_fds[f] = 0;

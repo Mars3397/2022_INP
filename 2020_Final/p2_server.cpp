@@ -18,6 +18,7 @@
 #include <sys/mman.h>
 #include <sys/time.h>
 #include <tuple>
+#include <mutex>
 #include <algorithm>
 
 using namespace std;
@@ -25,9 +26,7 @@ using namespace std;
 #define MAXLINE 1024
 #define PORT 8888
  
-struct accounts {
-    int balance[2];
-};
+int balance[2];
 
 int main(int argc, char *argv[]) {
     int listenfd, connfd, udpfd, nready, maxfd, current_clients = 0;
@@ -36,6 +35,7 @@ int main(int argc, char *argv[]) {
 	ssize_t n;
 	socklen_t len;
 	struct sockaddr_in cliaddr, servaddr;
+    mutex account1, account2;
 	void sig_chld(int);
 
     int max_clients = 4, client_fds[max_clients], client_number[max_clients];
@@ -44,12 +44,9 @@ int main(int argc, char *argv[]) {
         client_number[i] = -1;
     }
 
-    // shared memory
-    int shmid = shmget(IPC_PRIVATE, sizeof(struct accounts), IPC_CREAT | 0600);
-    void *shm = shmat(shmid, NULL, 0);
-    struct accounts* accounts_info = (struct accounts*)shm;
-    accounts_info->balance[0] = 0;
-    accounts_info->balance[1] = 0;
+    struct accounts* accounts_info;
+    balance[0] = 0;
+    balance[1] = 0;
 
 	// create listening TCP socket
 	listenfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -141,8 +138,8 @@ int main(int argc, char *argv[]) {
                     // show-accounts
                     if (args[0] == "show-accounts") {
                         if (l == 1) {
-                            string temp = "ACCOUNT1: " + to_string(accounts_info->balance[0]) + "\n";
-                            temp += "ACCOUNT2: " + to_string(accounts_info->balance[1]) + "\n";
+                            string temp = "ACCOUNT1: " + to_string(balance[0]) + "\n";
+                            temp += "ACCOUNT2: " + to_string(balance[1]) + "\n";
                             char msg[MAXLINE]; strcpy(msg, temp.c_str());
                             write(client_fds[f], msg, strlen(msg));
                         } else {
@@ -157,9 +154,13 @@ int main(int argc, char *argv[]) {
                                 write(client_fds[f], msg, strlen(msg));
                             } else {
                                 if (args[1] == "ACCOUNT1") {
-                                    accounts_info->balance[0] += money;
+                                    account1.lock();
+                                    balance[0] += money;
+                                    account1.unlock();
                                 } else {
-                                    accounts_info->balance[1] += money;
+                                    account2.lock();
+                                    balance[1] += money;
+                                    account2.unlock();
                                 }
                                 string temp = "Successfully deposits " + to_string(money) + " into " + args[1] + ".\n";
                                 char msg[MAXLINE]; strcpy(msg, temp.c_str());
@@ -177,21 +178,25 @@ int main(int argc, char *argv[]) {
                                 write(client_fds[f], msg, strlen(msg));
                             } else {
                                 if (args[1] == "ACCOUNT1") {
-                                    if (money > accounts_info->balance[0]) {
+                                    if (money > balance[0]) {
                                         char msg[MAXLINE] = "Withdraw excess money from accounts.\n";
                                         write(client_fds[f], msg, strlen(msg));
                                     } else {
-                                        accounts_info->balance[0] -= money;
+                                        account1.lock();
+                                        balance[0] -= money;
+                                        account1.unlock();
                                         string temp = "Successfully withdraws " + to_string(money) + " from " + args[1] + ".\n";
                                         char msg[MAXLINE]; strcpy(msg, temp.c_str());
                                         write(client_fds[f], msg, strlen(msg));
                                     }
                                 } else {
-                                    if (money > accounts_info->balance[1]) {
+                                    if (money > balance[1]) {
                                         char msg[MAXLINE] = "Withdraw excess money from accounts.\n";
                                         write(client_fds[f], msg, strlen(msg));
                                     } else {
-                                        accounts_info->balance[1] -= money;
+                                        account2.lock();
+                                        balance[1] -= money;
+                                        account2.unlock();
                                         string temp = "Successfully withdraws " + to_string(money) + " from " + args[1] + ".\n";
                                         char msg[MAXLINE]; strcpy(msg, temp.c_str());
                                         write(client_fds[f], msg, strlen(msg));
