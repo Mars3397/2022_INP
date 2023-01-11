@@ -1,13 +1,11 @@
-### HW3 
+# HW3 
 [spec](https://docs.google.com/document/d/1A987DybohteGmvUZvjv0LQXmJcZq10339JQve4dB88M/edit)
 
-### Overview
----
+## Overview
 
 - ㄧ個 **server** 一個 **instance**
 
-### Implementation 
----
+## Implementation 
 
 - Create a **VPC** with IPC4 `11.0.0.0/16` ([官方說明](https://docs.aws.amazon.com/directoryservice/latest/admin-guide/gsg_create_vpc.html) 但他長得不太一樣) → 點 Your VPC → create VPC
                 
@@ -23,17 +21,13 @@
 
 - `scp -i labsuser.pem server.cpp ec2-user@44.213.90.128:~` → copy server.cpp in [localhost](http://localhost) to home directory of ec2
 
-### EFS: Share storage (Done)
-
----
+## EFS: Share storage (Done)
 
 - 另外要 add network    
 - 在共同的 folder（你 mount 的點）裡面創一個文字檔放三個 server 目前各自 login 的人數就好了
 - [官方文件](https://docs.aws.amazon.com/zh_tw/AWSEC2/latest/UserGuide/AmazonEFS.html)    
 
-### Install g++
-
----
+## Install g++
 
 `sudo yum install -y gcc-c++`
 
