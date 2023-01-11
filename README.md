@@ -10,7 +10,7 @@ Implement additional commands base on HW1 1A2B server.
 
 ### HW3: 1A2B server on AWS EC2
 Implement a multi-server for 1A2B game using AWS service. 
-Implementation detail please refer to [HW3/README.md]()
+Implementation detail please refer to [HW3/README.md](https://github.com/Mars3397/2022_INP/tree/main/hw3)
 
 ---
 
