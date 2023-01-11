@@ -1,7 +1,20 @@
 # 2022_INP
 
-## Docker
+## Homework Description
 
+### HW1: 1A2B server
+Implement a 1A2B server with several commands using TCP and UDP. 
+
+### HW2: 1A2B server (advanced version)
+Implement additional commands base on HW1 1A2B server. 
+
+### HW3: 1A2B server on AWS EC2
+Implement a multi-server for 1A2B game using AWS service. 
+Implementation detail please refer to [HW3/README.md]()
+
+---
+
+## Docker Usage
 
 Check docker version: 
 ```
